@@ -48,7 +48,7 @@
             ID: <input type="number" name="insId"> <br /><br />
             Age: <input type="number" name="insAge"> <br /><br />
             position: <input type="text" name="insPosition"> <br /><br />
-            salary : <input type="number" name="insSalary"> <br /><br />
+            salary : <input type="number" name="insSalary" step = "0.01"> <br /><br />
             Total Kill : <input type="number" name="insTotalKill"> <br /><br />
             Team: <input type="text" name="insTeam"> <br /><br />
             <input type="submit" value="Insert" name="insertSubmit"></p>
@@ -78,7 +78,7 @@
 
         <h2>Delete in player Table</h2>
 
-        <form method="POST" action="gameTeam.php"> <!--refresh page when submitted-->
+        <form method="POST" action="player.php"> <!--refresh page when submitted-->
             <input type="hidden" id="deleteQueryRequest" name="deleteQueryRequest">
             Id: <input type="number" name="delId"> <br /><br />
             <input type="submit" value="Delete" name="deleteSubmit"></p>
@@ -86,23 +86,36 @@
 
         <hr />
         <h2>Display the Tuple in Team Table</h2>
-        <form method="POST" action="gameTeam.php"> <!--refresh page when submitted-->
-            <label for="opeartors">Team:</label>
-            <select name="operator" id="operator">
-            <option value="ave">AVE</option>
-            <option value="max">MAX</option>
-            <option value="min">MIN</option>
-            <option value="all">ALL</option>
-            </select>
-            <label for="a/k"></label>
-            <select name="ak" id="ak">
-            <option value="age">age</option>
-            <option value="salary">salary</option>
-            </select>
-        <br><br>
-            <input type="hidden" id="displayQueryRequest" name="displayQueryRequest">
-            <input type="submit" value="Display" name="displaySubmit"></p>
-        </form>
+        <table style=border-spacing:50px>
+            <tr>
+                <td align="left">
+                    <form method="POST" action="player.php"> <!--refresh page when submitted-->
+                    <label for="opeartors">Team:</label>
+                    <select name="operator" id="operator">
+                    <option value="max">MAX</option>
+                    <option value="min">MIN</option>
+                    <option value="all">ALL</option>
+                    </select>
+                    <label for="a/k"></label>
+                    <select name="ak" id="ak">
+                    <option value="age">age</option>
+                    <option value="salary">salary</option>
+                    <option value="totalKill">totalKill</option>
+                    </select>
+                    <br><br>
+                    <input type="hidden" id="displayQueryRequest" name="displayQueryRequest">
+                    <input type="submit" value="Display" name="displaySubmit"></p>
+                    </form>
+                </td>
+                <td align="right">
+                    <form method="POST" action="player.php"> <!--refresh page when submitted-->
+                    Show all player from team: <input type="text" name="dname"> <br /><br />
+                    <input type="hidden" id="displayTQueryRequest" name="displayTQueryRequest">
+                    <input type="submit" value="Display" name="displayTSubmit"></p>
+                    </form>
+                </td>
+            </tr>
+        </table>
 
         <?php
         $success = True; //keep track of errors so it redirects the page only if there are no errors
@@ -176,48 +189,18 @@
                 }
             }
         }
-        function printResult($result,$case) { //prints results from a select statement
-            switch ($case) {
-                case 0:
+        function printResult($result) { //prints results from a select statement
                     echo "<table>";
-                    echo "<tr><th>Name</th><th>Average</th></tr>";
+                    echo "<tr><th>Lname</th><th>Fname</th><th>ID</th><th>Age</th><th>position</th><th>salary</th><th>totalKill</th><th>teamName</th></tr>";
 
                     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> </tr>";
-                    //or just use "echo $row[0]"
-                    }
-                    break;
-                case 1:
-                    echo "<table>";
-                    echo "<tr><th>Name</th><th>Lowest</th></tr>";
-
-                    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> </tr>";
-                    //or just use "echo $row[0]"
-                    }
-                    break;
-                case 2:
-                    echo "<table>";
-                    echo "<tr><th>Name</th><th>Highest</th></tr>";
-
-                    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> </tr>";
-                    //or just use "echo $row[0]"
-                    }
-                    break;
-                
-                default:
-                    echo "<table>";
-                    echo "<tr><th>Name</th><th>City</th><th>Trophy</th></tr>";
-
-                    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> <td>" . $row[2] . "</td> </tr>";
+                    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> <td>" . $row[2] . "</td> <td>" . $row[3] . "</td><td>" . $row[4] . "</td><td>" . $row[5] . "</td><td>" . $row[6] . "</td><td>" . $row[7] . "</td></tr>";
                     //or just use "echo $row[0]"
                     }
 
                     echo "</table>";
-                    break;
-            }
+
+            
         }
 
 
@@ -246,19 +229,23 @@
         function handleUpdateRequest() {
             global $db_conn;
 
-            $name = $_POST['uName'];
-            $city = $_POST['uCity'];
-            $Trophy = $_POST['uTrophy'];
-
+            $id = $_POST['uId'];
+            $attribute = $_POST['att'];
+            $new_value = $_POST['new'];
+            $num = 0;
+            if($attribute != "teamName" && $attribute != "position" ){
+                $num = $new_value + 0;
+                executePlainSQL("UPDATE Player SET $attribute = '".$num."'  WHERE gameId='" . $id . "'");
+            }else{
+                executePlainSQL("UPDATE Player SET $attribute = '".$new_value."'  WHERE gameId='" . $id . "'");
+            }
             // you need the wrap the old name and new name values with single quotations
-            executePlainSQL("UPDATE GameTeam SET teamTrophy = teamTrophy || ' ' || '" . $Trophy . "' WHERE teamName='" . $name . "' AND teamCity = '" . $city . "'");
             OCICommit($db_conn);
         }
         function handleDeleteRequest() {
             global $db_conn;
-            $name = $_POST['delName'];
-            $city = $_POST['delCity'];
-            executePlainSQL("DELETE FROM GameTeam WHERE teamName= '" . $name . "' AND teamCity = '".$city."'");
+            $id = $_POST['delId'];
+            executePlainSQL("DELETE FROM Player WHERE gameId= '" . $id . "'");
             OCICommit($db_conn);
         }
         function handleInsertRequest() {
@@ -266,38 +253,44 @@
 
             //Getting the values from user and insert data into the table
             $tuple = array (
-                ":bind1" => $_POST['insName'],
-                ":bind2" => $_POST['insCity'],
-                ":bind3" => $_POST['insTrophy']
+                ":bind1" => $_POST['inslName'],
+                ":bind2" => $_POST['insfName'],
+                ":bind3" => $_POST['insId'],
+                ":bind4" => $_POST['insAge'],
+                ":bind5" => $_POST['insPosition'],
+                ":bind6" => $_POST['insSalary'],
+                ":bind7" => $_POST['insTotalKill'],
+                ":bind8" => $_POST['insTeam']
             );
 
             $alltuples = array (
                 $tuple
             );
 
-            executeBoundSQL("insert into GameTeam values (:bind1, :bind2,:bind3)", $alltuples);
+            executeBoundSQL("insert into Player values (:bind1, :bind2,:bind3,:bind4,:bind5,:bind6,:bind7,:bind8)", $alltuples);
             OCICommit($db_conn);
         }
         function handleDisplayRequest() {
             global $db_conn;
+
             $operator = $_POST['operator'];
             $ak = $_POST['ak'];
-            $case = Null;
-            if($operator == "ave"){
-                $case = 0;
-                $result = executePlainSQL("SELECT GameTeam.teamName,AVG($ak) FROM GameTeam,Player WHERE player.teamName = GameTeam.teamName GROUP BY GameTeam.teamName");
-            }else if($operator == "max"){
-                $case = 2;
-                $result = executePlainSQL("SELECT GameTeam.teamName,MAX($ak) FROM GameTeam,Player WHERE player.teamName = GameTeam.teamName GROUP BY GameTeam.teamName");
+            if($operator == "max"){
+                $result = executePlainSQL("SELECT * FROM Player WHERE $ak = (SELECT MAX($ak) FROM Player) ");
             }else if($operator == "min"){
-                $case = 1;
-                $result = executePlainSQL("SELECT GameTeam.teamName,MIN($ak) FROM GameTeam,Player WHERE player.teamName = GameTeam.teamName GROUP BY GameTeam.teamName");
+                $result = executePlainSQL("SELECT * FROM Player WHERE $ak = (SELECT Min($ak) FROM Player) ");
             }else if($operator == "all"){
-                $case = 3;
-                $result = executePlainSQL("SELECT * FROM GameTeam");
+               $result = executePlainSQL("SELECT * FROM Player");
             }
+            printResult($result);
             
-            printResult($result,$case);
+        }
+        function handleDisplayTRequest() {
+            global $db_conn;
+            $team = $_POST['dname'];
+            
+            $result = executePlainSQL("SELECT * FROM Player WHERE teamName = '".$team."' ");
+            printResult($result);
             
         }
         function handlePOSTRequest() {
@@ -310,13 +303,15 @@
                     handleInsertRequest();
                 } else if (array_key_exists('displayQueryRequest', $_POST)) {
                     handleDisplayRequest();
+                }else if (array_key_exists('displayTQueryRequest', $_POST)) {
+                    handleDisplayTRequest();
                 }
 
                 disconnectFromDB();
             }
         }
 
-        if (isset($_POST['deleteSubmit']) || isset($_POST['updateSubmit']) || isset($_POST['insertSubmit']) || isset($_POST['displaySubmit'])) {
+        if (isset($_POST['deleteSubmit']) || isset($_POST['updateSubmit']) || isset($_POST['insertSubmit']) || isset($_POST['displaySubmit'])|| isset($_POST['displayTSubmit'])) {
             handlePOSTRequest();
         } 
         ?>
