@@ -3,7 +3,7 @@ drop table Venue cascade constraint;
 drop table GameTeam cascade constraint;
 drop table Game_DevelopedBy cascade constraint;
 drop table GameReferee cascade constraint;
-drop table Referees cascade constraint;
+drop table Referee_Records cascade constraint;
 drop table EsprotGame_host_playAt_plays cascade constraint;
 drop table Player cascade constraint;
 
@@ -64,7 +64,7 @@ create table GameReferee
 	primary key(refereeID)
 	);
 
-create table Referees
+create table Referee_Records
 	(refereeID int,
 	gamedate date,
 	homeTeam varchar(20),
@@ -152,11 +152,11 @@ insert into GameReferee
 values(0036,'Roman','Isidore',4,4000);
 
 
-insert into Referees
+insert into Referee_Records
 values(1356,to_date('2021-11-06','YYYY-MM-DD'),'EDG','Damwon');
-insert into Referees
+insert into Referee_Records
 values(1237,to_date('2019-08-05','YYYY-MM-DD'),'RNG','EDG');
-insert into Referees
+insert into Referee_Records
 values(0036,to_date('2017-06-02','YYYY-MM-DD'),'BLG','WE');
 
 
