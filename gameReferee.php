@@ -193,38 +193,38 @@
         	switch ($case) {
         		case 0:
         			echo "<table>";
-            		echo "<tr><th>Name</th><th>Average</th></tr>";
+            		echo "<tr><th>refereeID</th><th>firstName</th><th>lastName</th><th>workYears</th><th>salary</th></tr>";
 
             		while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                	echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> </tr>";
-                	//or just use "echo $row[0]"
+						echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> <td>" . $row[2] . "</td><td>" . $row[3] . "</td><td>" . $row[4] . "</td> </tr>";
+						//or just use "echo $row[0]"
             		}
         			break;
         		case 1:
         			echo "<table>";
-            		echo "<tr><th>Name</th><th>Lowest</th></tr>";
+            		echo "<tr><th>refereeID</th><th>firstName</th><th>lastName</th><th>workYears</th><th>salary</th></tr>";
 
             		while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                	echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> </tr>";
-                	//or just use "echo $row[0]"
+						echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> <td>" . $row[2] . "</td><td>" . $row[3] . "</td><td>" . $row[4] . "</td> </tr>";
+						//or just use "echo $row[0]"
             		}
         			break;
         		case 2:
         			echo "<table>";
-            		echo "<tr><th>Name</th><th>Highest</th></tr>";
+            		echo "<tr><th>refereeID</th><th>firstName</th><th>lastName</th><th>workYears</th><th>salary</th></tr>";
 
             		while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                	echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> </tr>";
-                	//or just use "echo $row[0]"
+						echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> <td>" . $row[2] . "</td><td>" . $row[3] . "</td><td>" . $row[4] . "</td> </tr>";
+						//or just use "echo $row[0]"
             		}
         			break;
         		
         		default:
         			echo "<table>";
-            		echo "<tr><th>Name</th><th>City</th><th>Trophy</th></tr>";
+            		echo "<tr><th>refereeID</th><th>firstName</th><th>lastName</th><th>workYears</th><th>salary</th></tr>";
 
             		while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                	echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> <td>" . $row[2] . "</td> </tr>";
+                	echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> <td>" . $row[2] . "</td><td>" . $row[3] . "</td><td>" . $row[4] . "</td> </tr>";
                 	//or just use "echo $row[0]"
             		}
 
