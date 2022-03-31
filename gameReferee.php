@@ -102,7 +102,6 @@
         <form method="POST" action="gameReferee.php"> <!--refresh page when submitted-->
             <label for="opeartors">Search salary/workYears:</label>
             <select name="operator" id="operator">
-            <option value="ave">AVE</option>
             <option value="max">MAX</option>
             <option value="min">MIN</option>
             <option value="all">ALL</option>
@@ -299,10 +298,7 @@
             $operator = $_POST['operator'];
             $ak = $_POST['ak'];
             $case = Null;
-            if($operator == "ave"){
-            	$case = 0;
-                $result = executePlainSQL("SELECT * FROM GameReferee WHERE $ak = (SELECT AVG($ak) FROM GameReferee)");
-            }else if($operator == "max"){
+            if($operator == "max"){
             	$case = 2;
                 $result = executePlainSQL("SELECT * FROM GameReferee WHERE $ak = (SELECT MAX($ak) FROM GameReferee)");
             }else if($operator == "min"){
