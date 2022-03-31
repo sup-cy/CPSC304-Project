@@ -216,7 +216,7 @@
             global $db_conn;
             $begin = $_POST['dfDate'];
             $end = $_POST['dtDate'];
-            $result = executePlainSQL("SELECT * FROM EsprotGame_host_playAt_plays WHERE gamedate >= to_date('".$begin."' ,'YYYY-MM-DD') AND gamedate <= to_date('".$end."','YYYY-MM-DD')");
+            $result = executePlainSQL("SELECT * FROM EsprotGame_host_playAt_plays WHERE gamedate >= to_date('".$begin."' ,'YYYY-MM-DD') AND gamedate <= to_date('".$end."','YYYY-MM-DD') ORDER BY gamedate DESC");
             printResult($result);
             
         }
@@ -227,9 +227,9 @@
 
 
             if($ta == "team"){
-                $result = executePlainSQL("SELECT * FROM EsprotGame_host_playAt_plays WHERE homeTeam = '" . $team . "' OR awayTeam = '" . $team . "'");
+                $result = executePlainSQL("SELECT * FROM EsprotGame_host_playAt_plays WHERE homeTeam = '" . $team . "' OR awayTeam = '" . $team . "' ORDER BY gamedate DESC");
             }else if($ta == "all"){
-                $result = executePlainSQL("SELECT * FROM EsprotGame_host_playAt_plays");
+                $result = executePlainSQL("SELECT * FROM EsprotGame_host_playAt_plays ORDER BY gamedate DESC");
             }
             
             printResult($result);
