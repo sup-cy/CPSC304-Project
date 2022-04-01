@@ -31,11 +31,6 @@
                         <p><input type="submit" value="Referee" name="referee"></p>
                     </form>
                 </td>
-                <td>
-                    <form method="POST" action="commentator.php">
-                        <p><input type="submit" value="Commentator" name="commentator"></p>
-                    </form>
-                </td>
             </tr>
         </table>
 
