@@ -99,6 +99,7 @@
 
         <hr />
         <h2>Display the Tuple in Referee Table</h2>
+        <td align="left">
         <form method="POST" action="gameReferee.php"> <!--refresh page when submitted-->
             <label for="opeartors">Search salary/workYears:</label>
             <select name="operator" id="operator">
@@ -117,8 +118,19 @@
 
             <hr />
         </form>
+            </td>
+            <td align="right">
+            <form method="POST" action="gameReferee.php"> <!--refresh page when submitted-->
+                Find Referee who attended match in all cities: <br /><br />
+                <input type="hidden" id="displayDivQueryRequest" name="displayDivQueryRequest">
+                <input type="submit" value="Display" name="displaySubmit"></p>
+            </form>
+            </td>
+            </tr>
+
+
         <h2>Display the Tuple in Referee Records</h2>
-        <form method="POST" action="gameReferee.php"> <!--refresh page when submitted-->
+            <form method="POST" action="gameReferee.php"> <!--refresh page when submitted-->
             <label for="opeartors">Find:</label>
             <select name="operator" id="operator">
             <option value="ID">Referee ID</option>
@@ -128,7 +140,9 @@
             <input type="text" name="value"> <br /><br />
             <input type="hidden" id="displayRecordsQueryRequest" name="displayRecordsQueryRequest">
             <input type="submit" value="Display" name="displaySubmit"></p>
-        </form>
+            </form>
+
+
 
         <?php
         $success = True; //keep track of errors so it redirects the page only if there are no errors
@@ -350,6 +364,16 @@
             }
             printResult($result,3);
         }
+        function handleDisplayDivRequest(){
+            global $db_conn;
+            $result = executePlainSQL("SELECT * from GameReferee g
+            where not exists (select distinct v.venueCity from Venue v
+             minus
+            select e.venueCity from EsprotGame_host_playAt_plays e,Referee_Records r where
+            g.refereeID = r.refereeID and r.gamedate = e.gamedate and e.homeTeam = r.homeTeam and e.awayTeam=r.awayTeam)");
+            // city: Select distinct venueCity from Venue");
+            printResult($result,0);
+        }
 
 
 
@@ -367,6 +391,8 @@
                     handleInsertGRequest();
                 }else if (array_key_exists('displayRecordsQueryRequest', $_POST)) {
                     handleDisplayRecordsRequest();
+                }else if (array_key_exists('displayDivQueryRequest', $_POST)) {
+                    handleDisplayDivRequest();
                 }
 
                 disconnectFromDB();
