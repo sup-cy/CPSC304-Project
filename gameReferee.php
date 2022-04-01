@@ -114,12 +114,26 @@
         <br><br>
             <input type="hidden" id="displayQueryRequest" name="displayQueryRequest">
             <input type="submit" value="Display" name="displaySubmit"></p>
+
+            <hr />
+        </form>
+        <h2>Display the Tuple in Referee Records</h2>
+        <form method="POST" action="gameReferee.php"> <!--refresh page when submitted-->
+            <label for="opeartors">Find:</label>
+            <select name="operator" id="operator">
+            <option value="ID">Referee ID</option>
+            <option value="gamedate">gamedate</option>
+            <option value="all">ALL</option>
+            </select>
+            <input type="text" name="value"> <br /><br />
+            <input type="hidden" id="displayRecordsQueryRequest" name="displayRecordsQueryRequest">
+            <input type="submit" value="Display" name="displaySubmit"></p>
         </form>
 
         <?php
         $success = True; //keep track of errors so it redirects the page only if there are no errors
         $db_conn = NULL; // edit the login credentials in connectToDB()
-        $show_debug_alert_messages = False; // set to True if you want alerts to show you which methods are being triggered (see how it is used in debugAlertMessage())
+        $show_debug_alert_messages = FALSE; // set to True if you want alerts to show you which methods are being triggered (see how it is used in debugAlertMessage())
 
         function debugAlertMessage($message) {
             global $show_debug_alert_messages;
@@ -217,6 +231,15 @@
 						//or just use "echo $row[0]"
             		}
         			break;
+                case 3:
+                    echo "<table>";
+                    echo "<tr><th>refereeID</th><th>gamedate</th><th>homeTeam</th><th>awayTeam</th></tr>";
+
+                    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+                        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td> <td>" . $row[2] . "</td><td>" . $row[3] . "</td> </tr>";
+                        //or just use "echo $row[0]"
+                    }
+                    break;
         		
         		default:
         			echo "<table>";
@@ -298,6 +321,7 @@
             $operator = $_POST['operator'];
             $ak = $_POST['ak'];
             $case = Null;
+            debugAlertMessage($operator);
             if($operator == "max"){
             	$case = 2;
                 $result = executePlainSQL("SELECT * FROM GameReferee WHERE $ak = (SELECT MAX($ak) FROM GameReferee)");
@@ -305,13 +329,30 @@
             	$case = 1;
                 $result = executePlainSQL("SELECT * FROM GameReferee WHERE $ak = (SELECT MIN($ak) FROM GameReferee)");
             }else if($operator == "all"){
-            	$case = 3;
+            	$case = 0;
                 $result = executePlainSQL("SELECT * FROM GameReferee");
             }
             
             printResult($result,$case);
             
         }
+        function handleDisplayRecordsRequest() {
+            global $db_conn;
+
+            $operator = $_POST['operator'];
+            $value = $_POST['value'];
+            if($operator == "ID"){
+                $result = executePlainSQL("SELECT * FROM Referee_Records WHERE refereeID = '" . $value . "'");
+            }else if($operator == "gamedate"){
+                $result = executePlainSQL("SELECT * FROM Referee_Records WHERE gamedate = to_date('" . $value . "','YYYY-MM-DD')");
+            }else if($operator == "all"){
+                $result = executePlainSQL("SELECT * FROM Referee_Records");
+            }
+            printResult($result,3);
+        }
+
+
+
         function handlePOSTRequest() {
             if (connectToDB()) {
                 if (array_key_exists('deleteQueryRequest', $_POST)) {
@@ -324,6 +365,8 @@
                     handleDisplayRequest();
                 }else if (array_key_exists('insertRecordsQueryRequest', $_POST)) {
                     handleInsertGRequest();
+                }else if (array_key_exists('displayRecordsQueryRequest', $_POST)) {
+                    handleDisplayRecordsRequest();
                 }
 
                 disconnectFromDB();
