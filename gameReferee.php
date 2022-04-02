@@ -27,8 +27,8 @@
                     </form>
                 </td>
                 <td>
-                    <form method="POST" action="gameReferee.php">
-                        <p><input type="submit" value="Referee" name="referee"></p>
+                    <form method="POST" action="venue.php">
+                        <p><input type="submit" value="Venue" name="company"></p>
                     </form>
                 </td>
             </tr>
